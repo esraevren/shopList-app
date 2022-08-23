@@ -26,6 +26,9 @@ function addTodo(e) {
   //Select checkbox
 
   var value = shoppingitems.options[shoppingitems.selectedIndex].value;
+  const todoCategory = document.createElement('div');
+  todoCategory.classList.add('badge');
+  todoCategory.innerText = value;
 
   //Create todo div
   const todoDiv = document.createElement('div');
@@ -33,14 +36,17 @@ function addTodo(e) {
 
   //Create list
   const newTodo = document.createElement('li');
-  newTodo.innerText = todoInput.value + '-' + value;
+  newTodo.innerText = todoInput.value;
+  todoCategory.innerText = value;
 
   //Save to local
   saveLocalTodos(todoInput.value + '- ' + value);
-  //
+
   newTodo.classList.add('todo-item');
   todoDiv.appendChild(newTodo);
+  todoDiv.appendChild(todoCategory);
   todoInput.value = '';
+
   //Create Completed Button
   const completedButton = document.createElement('button');
   completedButton.innerHTML = `<i class="fas fa-check"></i>`;
@@ -57,6 +63,10 @@ function deleteTodo(e) {
   if (item.classList[0] === 'complete-btn') {
     const todo = item.parentElement;
     todo.classList.toggle('completed');
+    (() => {
+      const list = document.querySelector('ul');
+      list.appendChild(todo);
+    })();
     console.log(todo);
   }
 }
@@ -89,13 +99,11 @@ function filteredCategory(e) {
   let todos = JSON.parse(localStorage.getItem('todos'));
   console.log({ todos });
   console.log({ e });
-  const todoItems = [...document.querySelectorAll('.todo-item')];
+  const todoItems = [...document.querySelectorAll('.todo')];
   todoItems?.forEach(function (todo) {
-    if (todo.textContent.includes(e)) {
-      todo.parentElement.style.display = 'flex';
-    } else {
-      todo.parentElement.style.display = 'none';
-    }
+    todo.textContent.includes(e)
+      ? (todo.style.display = 'flex')
+      : (todo.style.display = 'none');
   });
 }
 
@@ -122,28 +130,6 @@ function removeLocalTodos(todo) {
   localStorage.setItem('todos', JSON.stringify(todos));
 }
 
-// item object div appent
-function list(item) {
-  const todoDiv = document.createElement('div');
-  todoDiv.classList.add('todo');
-
-  //Create list
-  const newTodo = document.createElement('li');
-  newTodo.innerText = item.value + '-' + item.category;
-  newTodo.classList.add('todo-item');
-  todoDiv.appendChild(newTodo);
-  todoInput.value = '';
-
-  //Create Completed Button
-  const completedButton = document.createElement('button');
-  completedButton.innerHTML = `<i class="fas fa-check"></i>`;
-  completedButton.classList.add('complete-btn');
-  todoDiv.appendChild(completedButton);
-
-  //final Todo
-  todoList.appendChild(todoDiv);
-}
-
 function getTodos() {
   let todos;
   if (localStorage.getItem('todos') === null) {
@@ -152,25 +138,32 @@ function getTodos() {
     todos = JSON.parse(localStorage.getItem('todos'));
   }
   todos.forEach(function (todo) {
-    console.log(todo);
+   let splitted=todo.split("-")
+    console.log(splitted[0]+splitted[1]);
+
     //Create todo div
     const todoDiv = document.createElement('div');
     todoDiv.classList.add('todo');
 
     //Create list
     const newTodo = document.createElement('li');
-    newTodo.innerText = todo.value + '-' + todo.category;
+    newTodo.innerText = splitted[0]
     newTodo.classList.add('todo-item');
     todoDiv.appendChild(newTodo);
-    todoInput.value = '';
-
+    
+    const todoCategory = document.createElement('div');
+    todoCategory.classList.add('badge');
+    todoCategory.innerText = splitted[1];
+    todoDiv.appendChild(todoCategory);
+    
     //Create Completed Button
-    const completedButton = document.createElement('button');
-    completedButton.innerHTML = `<i class="fas fa-check"></i>`;
-    completedButton.classList.add('complete-btn');
-    todoDiv.appendChild(completedButton);
+  const completedButton = document.createElement('button');
+  completedButton.innerHTML = `<i class="fas fa-check"></i>`;
+  completedButton.classList.add('complete-btn');
+  todoDiv.appendChild(completedButton);
 
-    //final Todo
-    todoList.appendChild(todoDiv);
+  //attach final Todo
+  todoList.appendChild(todoDiv);
+    
   });
 }
