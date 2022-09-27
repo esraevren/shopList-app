@@ -126,3 +126,14 @@
     cursor: pointer;
     pointer-events: none;
   }
+
+  .badge {
+        
+    background-color: #ff6f47;
+    color: white;
+    padding: 1px 8px;
+    text-align: center;
+    border-radius: 5px;
+    margin-right: 0px;
+  
+        }
